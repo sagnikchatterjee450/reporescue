@@ -211,19 +211,4 @@ npm start
 
 ---
 
-## 🗺️ What's Next on the Roadmap?
 
-- [ ] **GitHub Bot Integration**: Automated GitHub Action that posts interactive PR summaries and architecture diff diagrams directly on Pull Requests.
-- [ ] **VS Code / Cursor Extension**: Inline RepoRescue Code Explainer and DevFix right in developer editors.
-- [ ] **Multi-Repo Comparative Benchmarking**: Cross-compare architecture modularity across entire team organizations.
-- [ ] **Interactive Sandbox Execution**: Run DevFix repaired snippets live in WebAssembly micro-containers (WebContainers/Pyodide).
-
----
-
-<div align="center">
-
-**Built with ❤️ for Open Source Developers & Hacktoberfest**
-
-[⭐ Star on GitHub](https://github.com/) • [Report Bug / Feature Request](https://github.com/)
-
-</div>
