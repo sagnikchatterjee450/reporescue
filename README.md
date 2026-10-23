@@ -1,18 +1,8 @@
 # 🚀 RepoRescue & DevFix — AI Codebase Copilot, Tutor & Error Diagnostic Engine
 
-<div align="center">
+RepoRescue is an AI-powered developer onboarding copilot and intelligent error repair platform built to transform how developers explore unfamiliar codebases and resolve blocking bugs. When stepping into complex open-source or enterprise repositories, engineers face steep learning curves, stale documentation, and cryptic runtime errors.
 
-![RepoRescue Banner](https://img.shields.io/badge/Hackathon-Project%20Submission-emerald?style=for-the-badge&logo=github)
-![Gemini 3.8 Flash](https://img.shields.io/badge/Powered%20by-Gemini%203.8%20Flash-4285F4?style=for-the-badge&logo=google)
-![React 19](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript)
-![Tests Passing](https://img.shields.io/badge/Vitest-11%20Passed%20(100%25)-success?style=for-the-badge&logo=vitest)
-
-**Understand any codebase in minutes. Start contributing immediately. Fix cryptic errors in seconds.**
-
-[🌐 Live Application](https://ais-dev-mateonfamfabll3qepbwpj-621507185289.asia-southeast1.run.app) • [⚡ 30-Second Judge Quickstart](#-30-second-judge-quickstart) • [✨ Key Innovations](#-key-innovations) • [🛠️ Architecture](#-system-architecture) • [🧪 Test Suite](#-automated-testing)
-
-</div>
+RepoRescue bridges this gap with three unified modules: Tutor, an interactive onboarding guide that turns GitHub repositories into dynamic Mermaid architecture diagrams, role-based tours, citation-guarded Q&A, and downloadable ONBOARDING.md roadmaps; RepoRescue Core, offering codebase health scorecards, complexity metrics, and curated first-contribution task finders; and DevFix, an instant multi-language diagnostic engine explaining root causes and generating tested code fixes.
 
 ---
 
