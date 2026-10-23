@@ -1,0 +1,8 @@
+{
+  "name": "450 RepoRescue final hacktoberfest sagnik chatterjee",
+  "description": "AI Onboarding Copilot for Open Source — Understand any codebase and start contributing in minutes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
