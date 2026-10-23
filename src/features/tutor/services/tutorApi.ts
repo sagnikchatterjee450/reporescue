@@ -13,29 +13,36 @@ export interface IngestOptions {
   onProgress?: (step: string) => void;
 }
 
+const sessionTutorCache = new Map<string, RepoModel>();
+
 export async function fetchOrAnalyzeTutorRepo(
   options: IngestOptions
 ): Promise<RepoModel> {
   const { repoUrl, githubToken, useLocalOllama, onProgress } = options;
-
-  onProgress?.('Inspecting cache and repository tree...');
+  const normalizedKey = (repoUrl || '').trim().toLowerCase();
 
   // 1. If user entered demo or taskflow
   if (
-    repoUrl.toLowerCase().includes('taskflow') ||
-    repoUrl.toLowerCase().includes('demo') ||
-    repoUrl.toLowerCase().includes('open-source/taskflow')
+    normalizedKey.includes('taskflow') ||
+    normalizedKey.includes('demo') ||
+    normalizedKey.includes('open-source/taskflow')
   ) {
-    onProgress?.('Loading TaskFlow Onboarding Model...');
-    await new Promise((r) => setTimeout(r, 400));
+    onProgress?.('Loading TaskFlow Onboarding Model ✓');
     return TASKFLOW_TUTOR_MODEL;
   }
 
-  // 2. Check IndexedDB cache
+  // 2. Check in-memory session cache
+  if (sessionTutorCache.has(normalizedKey)) {
+    onProgress?.('Loaded cached RepoModel ✓');
+    return sessionTutorCache.get(normalizedKey)!;
+  }
+
+  // 3. Check IndexedDB cache
   try {
     const cached = await getCachedRepoModel(repoUrl, 'latest');
     if (cached) {
       onProgress?.('Loaded cached RepoModel from IndexedDB ✓');
+      sessionTutorCache.set(normalizedKey, cached);
       return cached;
     }
   } catch (err) {

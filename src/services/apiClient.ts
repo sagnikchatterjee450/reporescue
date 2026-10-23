@@ -1,33 +1,34 @@
 import { RepoAnalysisData, FileExplanation, RepoComparisonData, ChatMessage, DevFixRequest, DevFixResult } from '../types';
 import { TASKFLOW_DEMO_REPO, SAMPLE_COMPARISON_DATA } from '../data/demoRepos';
 
+// Fast in-memory client caches for sub-second repeat queries
+const clientRepoCache = new Map<string, RepoAnalysisData>();
+const clientDevFixCache = new Map<string, DevFixResult>();
+
 export async function fetchAndAnalyzeRepo(
   repoUrl: string,
   onProgress?: (step: string) => void
 ): Promise<RepoAnalysisData> {
-  // Step 1: Repository Found
-  onProgress?.('Repository Found ✓');
-  await new Promise((r) => setTimeout(r, 400));
+  const normalizedUrl = (repoUrl || '').trim().toLowerCase();
 
-  // Check if demo requested directly
-  if (!repoUrl || repoUrl.toLowerCase().includes('demo') || repoUrl.toLowerCase().includes('taskflow')) {
-    onProgress?.('Reading README ✓');
-    await new Promise((r) => setTimeout(r, 400));
-    onProgress?.('Mapping File Structure ✓');
-    await new Promise((r) => setTimeout(r, 400));
-    onProgress?.('Analyzing Dependencies ✓');
-    await new Promise((r) => setTimeout(r, 400));
-    onProgress?.('Understanding Architecture ✓');
-    await new Promise((r) => setTimeout(r, 400));
-    onProgress?.('Finding Contribution Opportunities ✓');
-    await new Promise((r) => setTimeout(r, 400));
+  // Instant demo path
+  if (!normalizedUrl || normalizedUrl.includes('demo') || normalizedUrl.includes('taskflow')) {
+    onProgress?.('Repository Found ✓');
     onProgress?.('Generating Developer Guide...');
-    await new Promise((r) => setTimeout(r, 300));
     return TASKFLOW_DEMO_REPO;
   }
 
-  // Step 2: Fetch repo from server
-  onProgress?.('Reading README ✓');
+  // Instant client cache hit
+  if (clientRepoCache.has(normalizedUrl)) {
+    onProgress?.('Repository Found ✓');
+    onProgress?.('Loaded from instant cache ✓');
+    return clientRepoCache.get(normalizedUrl)!;
+  }
+
+  // Step 1: Real-time progress
+  onProgress?.('Repository Found ✓');
+  onProgress?.('Reading README & Mapping Structure...');
+
   let repoDataRaw: RepoAnalysisData;
 
   try {
@@ -46,7 +47,6 @@ export async function fetchAndAnalyzeRepo(
     repoDataRaw = data.data;
   } catch (err: any) {
     console.warn('Backend fetch error, providing structured demo preview:', err);
-    // If invalid or rate limited, return TaskFlow with custom URL banner
     return {
       ...TASKFLOW_DEMO_REPO,
       repoUrl,
@@ -55,16 +55,10 @@ export async function fetchAndAnalyzeRepo(
     };
   }
 
-  // Step 3: Progress steps
-  onProgress?.('Mapping File Structure ✓');
-  await new Promise((r) => setTimeout(r, 400));
+  onProgress?.('Analyzing Dependencies & Tech Stack ✓');
+  onProgress?.('Understanding Architecture & Contribution Opportunities...');
 
-  onProgress?.('Analyzing Dependencies ✓');
-  await new Promise((r) => setTimeout(r, 400));
-
-  onProgress?.('Understanding Architecture ✓');
-
-  // Step 4: AI Analysis
+  // Step 2: AI Analysis
   let fullAnalysis: RepoAnalysisData = repoDataRaw;
   try {
     const aiRes = await fetch('/api/ai/analyze', {
@@ -83,11 +77,8 @@ export async function fetchAndAnalyzeRepo(
     console.warn('AI analysis call failed, using synthesized structure:', e);
   }
 
-  onProgress?.('Finding Contribution Opportunities ✓');
-  await new Promise((r) => setTimeout(r, 400));
-
-  onProgress?.('Generating Developer Guide...');
-  await new Promise((r) => setTimeout(r, 300));
+  onProgress?.('Generating Developer Guide ✓');
+  clientRepoCache.set(normalizedUrl, fullAnalysis);
 
   return fullAnalysis;
 }
@@ -178,6 +169,11 @@ export async function compareReposAI(repoAUrl: string, repoBUrl: string): Promis
 }
 
 export async function analyzeDevFixError(params: DevFixRequest): Promise<DevFixResult> {
+  const cacheKey = `${params.language}:${params.errorCode}:${(params.codeSnippet || '').slice(0, 100)}`.toLowerCase();
+  if (clientDevFixCache.has(cacheKey)) {
+    return clientDevFixCache.get(cacheKey)!;
+  }
+
   const res = await fetch('/api/devfix/analyze', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -194,5 +190,6 @@ export async function analyzeDevFixError(params: DevFixRequest): Promise<DevFixR
     throw new Error('Invalid response structure received from DevFix analyzer.');
   }
 
+  clientDevFixCache.set(cacheKey, data.result);
   return data.result;
 }
